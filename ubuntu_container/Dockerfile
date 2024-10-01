@@ -1,11 +1,29 @@
 FROM ubuntu:20.04
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 RUN apt update && apt install -y \
     openssh-server \
     libnss-ldap \
     libpam-ldap \
     nscd \
-    ldap-utils  # ldap-utils 패키지 추가
+    ldap-utils \
+    python3 \
+    python3-pip \
+    supervisor
+
+VOLUME [ "/logs" ]
+
+COPY request_recv /src/request_recv
+# COPY request_send /src/request_send
+COPY requirements.txt /src/requirements.txt
+
+RUN pip3 install -r /src/requirements.txt
+
+RUN mkdir -p /logs
+
+# supervisord 설정 파일 복사
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # SSH 설정
 RUN mkdir /var/run/sshd
@@ -29,5 +47,5 @@ COPY ldap-setting/sshd_config /etc/ssh/sshd_config
 # nscd 시작 설정
 RUN systemctl enable nscd
 
-# SSH 데몬 실행
-CMD ["/usr/sbin/sshd", "-D"]
+# supervisord 실행
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
