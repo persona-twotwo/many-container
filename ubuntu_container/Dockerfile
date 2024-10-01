@@ -15,7 +15,7 @@ RUN apt update && apt install -y \
 VOLUME [ "/logs" ]
 
 COPY request_recv /src/request_recv
-# COPY request_send /src/request_send
+COPY request_send /src/request_send
 COPY requirements.txt /src/requirements.txt
 
 RUN pip3 install -r /src/requirements.txt
