@@ -5,18 +5,18 @@ head_template = """services:
 
 body_template = """
   many_ubuntu_{index}:
-    image: many_ubuntu
+    image: alpine_web
     container_name: "many_ubuntu_{index}"
+    volumes:
+      - ../logs:/logs
+    environment:
+      - CONT_ID={index}
+    ports:
+      - "{external_port}:8000"
     networks:
       custom_network:
         ipv4_address: {ip}
-    volumes:
-      - ../logs:/logs
-      - ../downloaded:/downloaded
-    environment:
-      - HOST_IP={ip}
-    ports:
-      - {external_port}:8000
+
 """
 
 tail_template = """
@@ -31,7 +31,7 @@ def int_to_ip(i):
 
 
 UNIT = 15
-MAX_CONTAINER = 100
+MAX_CONTAINER = 100 -1
 
 # rm -rf compose-file
 os.system('rm -rf compose-file')
@@ -57,7 +57,7 @@ for i in range(0, MAX_CONTAINER,UNIT):
 
 # container_ips.csv
 # container_name,ip
-with open('ubuntu_container/request_send/container_ips.csv', 'w') as f:
+with open('container_ips.csv', 'w') as f:
   writer = csv.writer(f)
   writer.writerow(['container_name', 'ip', 'external_port'])
   for i, ip in enumerate(container_ips):

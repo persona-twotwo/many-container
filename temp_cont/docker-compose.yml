@@ -1,0 +1,17 @@
+services:
+  block_test:
+    build: .
+    container_name: ""
+    volumes:
+      - ../logs:/logs
+    environment:
+      - CONT_ID=00090
+    ports:
+      - "40000:8000"
+    networks:
+      custom_network:
+        ipv4_address: 10.199.199.199
+
+networks:
+  custom_network:
+    external: true

@@ -1,4 +1,8 @@
 compose-file/
 container_ips.csv
-logs/
+*logs*
 downloaded/
+*.out
+*.log
+*.results
+*.tar.gz
